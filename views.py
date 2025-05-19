@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from sqlalchemy import create_engine, text
 from sqlalchemy.util import to_list 
-from Identity_Reconciliation import app
+from __init__ import app
 from config import connection_url
 from datetime import datetime
 import numpy as np
