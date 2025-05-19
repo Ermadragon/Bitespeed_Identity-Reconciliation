@@ -1,7 +1,3 @@
-"""
-This script runs the Identity_Reconciliation application using a development server.
-"""
-
 from os import environ
 from Identity_Reconciliation import app
 
