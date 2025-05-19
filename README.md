@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 After installing the required libraries, run the application using
 ```
-python run runserver.py
+python runserver.py
 ```
 
 The environment variables were stored in a **.env** file.
