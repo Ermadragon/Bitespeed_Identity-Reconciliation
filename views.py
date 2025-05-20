@@ -185,7 +185,6 @@ def getContactIDs(e,p):
 def getEmails(IDs):
     conn = engine.connect()
 
-
     placeholders = ', '.join([f':id{i}' for i in range(len(IDs))])
     
     email_query = text(f'''
