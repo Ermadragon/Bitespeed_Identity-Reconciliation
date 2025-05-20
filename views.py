@@ -1,6 +1,5 @@
 from collections import OrderedDict
 from flask import Flask, render_template, request, jsonify
-import numpy as np
 from sqlalchemy import create_engine, text 
 from Identity_Reconciliation import app
 from config import connection_url
