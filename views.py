@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from flask import Flask, render_template, request, jsonify
 from sqlalchemy import create_engine, text 
-from Identity_Reconciliation import app
+from __init__ import app
 from config import connection_url
 from datetime import datetime
 
