@@ -36,7 +36,7 @@ def add_primary_contact(e, p):
             :updatedAt,
             NULL
         );
-        ''')                                  # Resolved (SQL Syntax)("primary")
+        ''')                                  
 
     params = {
     'phone': p,
@@ -45,7 +45,7 @@ def add_primary_contact(e, p):
     'updatedAt': datetime.now()
     }
 
-    conn.execute(create_primary_contact_query, params)        # Resolved
+    conn.execute(create_primary_contact_query, params)       
     
     conn.commit()
 
@@ -118,22 +118,12 @@ def getContactIDs(e,p):
 
         res1 = conn.execute(if_null_query_1, {'val': val(e,p)[0]})
         res1_list = [row[0] for row in res1]
-        print("r1 ",res1_list)
         res2 = conn.execute(if_null_query_2, {'val': val(e,p)[0]})
         res2_list1 = [row for row in res2]
-        print('r21 ',res2_list1[0][0], 'rs2', res2_list1[0][1])
-       # res2_list2 = [row[0][1] for row in res2]
-        #print('r22 ',res2_list2)
 
         result_list = res1_list + [res2_list1[0][0]] + [res2_list1[0][1]]
-        #print(result_list)
 
         result_list = list(OrderedDict.fromkeys(result_list))
-        print(result_list)
-
-        #if not result_list:                                          # Doubt here (value of not e for e = "")
-         #   return jsonify({'error': '''No relevant contact found. Please enter both email and phone number in order to 
-          #                create new contact.'''}), 404
     else:
         id_query = text('''
         SELECT
@@ -143,14 +133,12 @@ def getContactIDs(e,p):
         WHERE email = :email OR phoneNumber = :phone      
         ORDER BY
         createdAt
-        ''')                                      # Resolved (Parametrize)
+        ''')                                      
 
-        result = conn.execute(id_query, {'email': e, 'phone': p})         # Doubt here
-        print("r ", result)
+        result = conn.execute(id_query, {'email': e, 'phone': p})         
         result_list = [row[0] for row in result]
-        print("rs ", result_list)
-        # print("rs0", result_list[0])
-        if not result_list:                           # Doubt here (not with result set)                                    
+        
+        if not result_list:                                                               
             add_primary_contact(e, p)
             result = conn.execute(id_query, {'email': e, 'phone': p})
             result_list = [row[0] for row in result]
@@ -179,20 +167,15 @@ def getContactIDs(e,p):
 
         existing_contact_list = existing_contact_list + [row[0] for row in existing_contact]
     
-        print(existing_contact_list)
         if not existing_contact_list:
             add_secondary_contact(e, p, result_list)
             result = conn.execute(id_query, {'email': e, 'phone': p})
             result_list = [row[0] for row in result]
-
-    #print("r ", result)
-    # IDs = [row[0] for row in result]
     
-    print(result_list)
     primaryContactID = result_list[0]
 
     try:
-        secondaryContactIDs = result_list[1:]        # Doubt here (List indexing)
+        secondaryContactIDs = result_list[1:]        
     except Exception as e:
         secondaryContactIDs = []
 
@@ -203,10 +186,9 @@ def getContactIDs(e,p):
 def getEmails(IDs):
     conn = engine.connect()
 
-    print("i ", IDs)
 
     placeholders = ', '.join([f':id{i}' for i in range(len(IDs))])
-    print("p", placeholders)
+    
     email_query = text(f'''
     SELECT
     email
@@ -220,7 +202,7 @@ def getEmails(IDs):
 
     params = {f'id{i}': val for i, val in enumerate(IDs)}
 
-    result = conn.execute(email_query, params)           # Doubt here
+    result = conn.execute(email_query, params)         
     email_list = [row[0] for row in result]
 
     conn.close()
@@ -243,7 +225,7 @@ def getPhoneNumbers(IDs):
     id IN ({placeholders})
     ORDER BY
     createdAt
-    ''')                                             # Doubt here
+    ''')                                             
 
     params = {f'id{i}': val for i, val in enumerate(IDs)}
 
@@ -282,7 +264,7 @@ def form():
 
 @app.route('/identify', methods = ['POST'])
 def required_contacts():
-    if 'Email' not in request.json and 'Phone Number' not in request.json:                  # Order of precedence
+    if 'Email' not in request.json and 'Phone Number' not in request.json:                  
         return jsonify({'error': 'Please enter email and/or phone number.'})
 
     try:
@@ -290,17 +272,10 @@ def required_contacts():
     except Exception as e:
         email = ""
 
-    print(email)
-
     try:
         phoneNumber = request.json['Phone Number']
     except Exception as e:
         phoneNumber = ""
-
-    print(phoneNumber)
-
-    print(type(email))
-    print(type(phoneNumber))
 
     primaryContactID, secondaryContactIDs, IDs = getContactIDs(email, phoneNumber)
 
